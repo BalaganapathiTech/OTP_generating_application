@@ -184,9 +184,3 @@ fetch("/api/protected-endpoint", {
 ## License
 
 This project is open-source and available under the **MIT License**.
-
----
-
-If you want, I can also create a **ready-to-use `README.md` with badges, screenshots, and project setup GIF** so it looks **professional for GitHub or portfolio**.
-
-Do you want me to do that next?
