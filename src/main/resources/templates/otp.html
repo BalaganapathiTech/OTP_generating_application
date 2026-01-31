@@ -1,0 +1,258 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>OTP Login</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial;-->
+<!--            background: #f4f4f4;-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            margin-top: 80px;-->
+<!--        }-->
+<!--        .card {-->
+<!--            background: white;-->
+<!--            padding: 25px;-->
+<!--            width: 350px;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px #ccc;-->
+<!--        }-->
+<!--        input, button {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+<!--        button {-->
+<!--            background: #007bff;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--        }-->
+<!--        .msg {-->
+<!--            margin-top: 15px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="card">-->
+<!--    <h3>OTP Authentication</h3>-->
+
+<!--    <input type="text" id="phone" placeholder="Enter phone number">-->
+<!--    <button onclick="requestOtp()">Request OTP</button>-->
+
+<!--    <input type="text" id="otp" placeholder="Enter OTP">-->
+<!--    <button onclick="verifyOtp()">Verify OTP</button>-->
+
+<!--    <div id="result" class="msg"></div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function requestOtp() {-->
+<!--        let phone = document.getElementById("phone").value;-->
+
+<!--        fetch(`/api/client/auth/requestOtp/${phone}`)-->
+<!--            .then(res => res.json())-->
+<!--            .then(data => {-->
+<!--                document.getElementById("result").innerText = data.message;-->
+<!--            });-->
+<!--    }-->
+
+<!--    function verifyOtp() {-->
+<!--        let phone = document.getElementById("phone").value;-->
+<!--        let otp = document.getElementById("otp").value;-->
+
+<!--        fetch(`/api/client/auth/verifyOtp`, {-->
+<!--            method: "POST",-->
+<!--            headers: { "Content-Type": "application/json" },-->
+<!--            body: JSON.stringify({-->
+<!--                phoneNo: phone,-->
+<!--                otp: otp-->
+<!--            })-->
+<!--        })-->
+<!--        .then(res => res.json())-->
+<!--        .then(data => {-->
+<!--            if (data.jwt) {-->
+<!--                document.getElementById("result").innerText =-->
+<!--        "OTP verified successfully!";-->
+
+<!--        localStorage.setItem("jwt", data.jwt);-->
+<!--        } else {-->
+<!--        document.getElementById("result").innerText =-->
+<!--        data.message;-->
+<!--        }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OTP Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button#requestBtn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        button#requestBtn:hover {
+            background-color: #0056b3;
+        }
+
+        button#verifyBtn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button#verifyBtn:hover {
+            background-color: #1e7e34;
+        }
+
+        .msg {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #555;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 500px) {
+            .card {
+                padding: 25px 15px;
+            }
+
+            input, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .msg {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>OTP Authentication</h3>
+
+    <input type="text" id="phone" placeholder="Enter phone number">
+    <button id="requestBtn" onclick="requestOtp()">Request OTP</button>
+
+    <input type="text" id="otp" placeholder="Enter OTP">
+    <button id="verifyBtn" onclick="verifyOtp()">Verify OTP</button>
+
+    <div id="result" class="msg"></div>
+</div>
+
+<script>
+    function requestOtp() {
+        let phone = document.getElementById("phone").value.trim();
+        if(!phone) {
+            document.getElementById("result").innerText = "Please enter a phone number.";
+            return;
+        }
+
+        fetch(`/api/client/auth/requestOtp/${phone}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.message;
+            })
+            .catch(err => {
+                document.getElementById("result").innerText = "Error sending OTP.";
+                console.error(err);
+            });
+    }
+
+    function verifyOtp() {
+        let phone = document.getElementById("phone").value.trim();
+        let otp = document.getElementById("otp").value.trim();
+        if(!phone || !otp) {
+            document.getElementById("result").innerText = "Please enter both phone number and OTP.";
+            return;
+        }
+
+        fetch(`/api/client/auth/verifyOtp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                phoneNo: phone,
+                otp: otp
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.jwt) {
+                document.getElementById("result").innerText = "OTP verified successfully!";
+                localStorage.setItem("jwt", data.jwt);
+            } else {
+                document.getElementById("result").innerText = data.message;
+            }
+        })
+        .catch(err => {
+            document.getElementById("result").innerText = "Error verifying OTP.";
+            console.error(err);
+        });
+    }
+</script>
+
+</body>
+</html>
